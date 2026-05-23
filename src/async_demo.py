@@ -6,31 +6,27 @@ from typing import List
 
 
 async def fake_api_call(i: int, delay_s: float = 1.0) -> str:
-    """Udaje request do API: czeka delay_s sekund i zwraca wynik."""
     await asyncio.sleep(delay_s)
     return f"ok-{i}"
 
 
 async def run_sequential(n: int) -> List[str]:
-    """N wywołań jedno po drugim (wolno)."""
     results: List[str] = []
     for i in range(n):
-        results.append(await fake_api_call(i))
+        results.append(await fake_api_call(i))  # czekasz na 1, potem 2, potem 3...
     return results
 
 
 async def run_parallel_unlimited(n: int) -> List[str]:
-    """N wywołań naraz (szybko, ale bez limitu)."""
-    tasks = [fake_api_call(i) for i in range(n)]
-    return await asyncio.gather(*tasks)
+    tasks = [fake_api_call(i) for i in range(n)]  # przygotuj 10 "telefonów"
+    return await asyncio.gather(*tasks)           # odpal je naraz
 
 
 async def run_parallel_limited(n: int, limit: int) -> List[str]:
-    """N wywołań naraz, ale max 'limit' równocześnie (produkcyjnie)."""
     sem = asyncio.Semaphore(limit)
 
     async def wrapped(i: int) -> str:
-        async with sem:
+        async with sem:                           # max 'limit' na raz
             return await fake_api_call(i)
 
     tasks = [wrapped(i) for i in range(n)]
