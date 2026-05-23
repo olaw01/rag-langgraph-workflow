@@ -22,7 +22,7 @@ def build_chain():
 
     # Check API key
     if not os.getenv("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY missing in .env)
+        raise RuntimeError("OPENAI_API_KEY missing in .env")
 
     # Create a model, use: gpt-4o-mini, set creativity: 0.2
     model = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
