@@ -3,3 +3,5 @@
 __pycache__/
 *.pyc
 .idea/
+# Chroma local vector database
+mini_projects/p04_RAG_QA/data/chroma
