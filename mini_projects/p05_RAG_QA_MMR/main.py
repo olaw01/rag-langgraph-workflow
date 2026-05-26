@@ -50,7 +50,7 @@ from langchain_community.vectorstores import Chroma
 
 def load_documents(docs_dir: Path):
     """
-    Load documents from the docs directory. (mini_projects/p04_RAG_QA/data/docs)
+    Load documents from the docs directory. (mini_projects/p04_RAG_QA_similarity/data/docs)
     """
     loader = DirectoryLoader(
         str(docs_dir),
@@ -155,13 +155,15 @@ def rag_answer(question: str, retriever) -> dict:
 
     prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are a Q&A assistant. Answer only using the provided context. "
-                "If the answer is not in the context, say: "
-                "'I don't know based on the provided documents.' "
-                "Be concise.",
-            ),
+            ("system",
+             "You are a Q&A assistant.\n"
+             "RULES:\n"
+             "1) Answer ONLY based on CONTEXT.\n"
+             "2) If the context doesn't provide an answer, state precisely: "
+             "'I don't know based on the documents provided.'\n"
+             "3) Don't guess or add facts.\n"
+             "4) Keep your answer short and to the point."
+             ),
             (
                 "human",
                 "Question:\n{question}\n\nContext:\n{context}",
@@ -193,7 +195,7 @@ def main():
         raise RuntimeError("Missing OPENAI_API_KEY in .env file")
 
     # dir paths
-    base_dir = Path(__file__).parent #C:\Users\awawr\PythonProject\PythonProject\rag-langgraph-workflow\mini_projects\p04_RAG_QA
+    base_dir = Path(__file__).parent #C:\Users\awawr\PythonProject\PythonProject\rag-langgraph-workflow\mini_projects\p04_RAG_QA_similarity
     docs_dir = base_dir / "data" / "docs"
     persist_dir = base_dir / "data" / "chroma"
 
@@ -206,11 +208,22 @@ def main():
     # build a local vector datastore (chroma)
     vectorstore = build_vectorstore(chunks, persist_dir)
 
+    # ---------------------------------------------------------------------------------------------------------------------
     # Retriever is the element that receives the question and finds the matching fragments
+    # SIMILARITY
+    # retriever = vectorstore.as_retriever(
+    #     search_kwargs={
+    #         "k": 4, # return the 4 most matching chunks !!!
+    #     }
+    # )
+    # MMR
+    # fetch_k=20 -> fetch 20 candidates by similarity
+    # k=4 -> select the final 4, but diverse ones
+    # ---------------------------------------------------------------------------------------------------------------------
+
     retriever = vectorstore.as_retriever(
-        search_kwargs={
-            "k": 4, # return the 4 most matching chunks !!!
-        }
+        search_type="mmr",
+        search_kwargs={"k": 4, "fetch_k": 20}
     )
 
     print("RAG Q&A is ready.")
