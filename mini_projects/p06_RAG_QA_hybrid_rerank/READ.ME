@@ -1,0 +1,78 @@
+# Hybrid RAG with LLM Reranking
+
+This project is a small Retrieval-Augmented Generation application built with LangChain, OpenAI models, Chroma, and BM25.
+
+The goal of the project is to build a more reliable Q&A system over local Markdown documents.
+
+## What it does
+
+The application:
+
+- loads Markdown documents from a local folder,
+- splits them into smaller chunks,
+- creates embeddings for each chunk,
+- stores the chunks in a local Chroma vector database,
+- retrieves candidate passages using both BM25 and vector search,
+- merges and deduplicates the results,
+- uses an LLM reranker to select the most relevant passages,
+- generates a final grounded answer only from the selected context,
+- returns sources used for the answer.
+
+## Why hybrid retrieval?
+
+This project uses two retrieval methods:
+
+### BM25
+
+BM25 is keyword-based search.
+It works well when the question contains exact words, acronyms, IDs, or technical terms.
+
+### Vector search
+
+Vector search is semantic search.
+It works well when the question is similar in meaning to the document, even if it uses different words.
+
+By combining both methods, the system has a better chance of finding the right context.
+
+## Why LLM reranking?
+
+The first retrieval step may return passages that are only partially relevant.
+The LLM reranker checks the retrieved candidates and selects only the passages that actually contain useful information for answering the question.
+
+If no candidate contains the answer, the reranker returns an empty list.
+In that case, the system refuses to answer instead of hallucinating.
+
+## Hallucination control
+
+The final answer prompt forces the model to:
+
+- answer only using the provided context,
+- avoid general knowledge,
+- avoid guessing,
+- return a fixed fallback message when the answer is missing,
+- include an evidence line.
+
+Fallback answer:
+
+```text
+I don't know based on the provided documents.
+
+## Pipeline
+
+load documents
+      ↓
+chunk documents
+      ↓
+create embeddings
+      ↓
+store in Chroma
+      ↓
+retrieve with BM25 + vector search
+      ↓
+merge and deduplicate candidates
+      ↓
+rerank with LLM
+      ↓
+generate grounded answer
+      ↓
+return answer + sources

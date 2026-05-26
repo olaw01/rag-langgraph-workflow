@@ -6,3 +6,9 @@ __pycache__/
 # Chroma local vector database
 mini_projects/p04_RAG_QA_similarity/data/chroma
 mini_projects/p05_RAG_QA_MMR/data/chroma
+
+# Chroma artifacts (vector index)
+**/data/chroma/
+**/data/chroma/**
+**/chroma.sqlite3
+**/*.bin
