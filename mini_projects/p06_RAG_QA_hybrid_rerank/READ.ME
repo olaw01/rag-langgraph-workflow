@@ -8,15 +8,54 @@ The goal of the project is to build a more reliable Q&A system over local Markdo
 
 The application:
 
-- loads Markdown documents from a local folder,
-- splits them into smaller chunks,
-- creates embeddings for each chunk,
-- stores the chunks in a local Chroma vector database,
-- retrieves candidate passages using both BM25 and vector search,
-- merges and deduplicates the results,
-- uses an LLM reranker to select the most relevant passages,
-- generates a final grounded answer only from the selected context,
-- returns sources used for the answer.
+1. Loads Markdown documents from the data/docs folder.
+2. Splits documents into smaller chunks.
+3. Creates embeddings and stores them in Chroma.
+4. Creates two retrievers:
+   - BM25 for keyword search,
+   - vector retriever for semantic search.
+5. The user enters a question.
+6. The program retrieves matching document chunks.
+7. The LLM selects the best chunks, which is called reranking.
+8. If there is no useful chunk, the program says: I do not know.
+9. If useful chunks exist, the LLM generates an answer only from those chunks.
+10. The program prints the answer and sources.
+
+Process flow
+
+Markdown files
+    ↓
+load_documents()
+    ↓
+Document objects
+    ↓
+chunk_documents()
+    ↓
+small chunks
+    ↓
+build_vectorstore()
+    ↓
+Chroma vector database
+    ↓
+BM25Retriever + vector retriever
+    ↓
+user question
+    ↓
+hybrid_candidates()
+    ↓
+candidate chunks
+    ↓
+llm_rerank()
+    ↓
+best chunks
+    ↓
+rag_answer()
+    ↓
+final answer + sources
+
+Short process:
+
+documents → chunks → vector store → retrieval → LLM reranking → answer
 
 ## Why hybrid retrieval?
 

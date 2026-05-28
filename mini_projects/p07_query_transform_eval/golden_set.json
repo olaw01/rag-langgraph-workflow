@@ -1,0 +1,12 @@
+[
+  {"id": 1, "question": "What is LCEL?", "expected_in_docs": true},
+  {"id": 2, "question": "What does asyncio.gather do?", "expected_in_docs": true},
+  {"id": 3, "question": "What is RAG?", "expected_in_docs": false},
+  {"id": 4, "question": "What is an LLM?", "expected_in_docs": false},
+  {"id": 5, "question": "Explain structured output in one sentence.", "expected_in_docs": true},
+  {"id": 6, "question": "What does Semaphore do?", "expected_in_docs": true},
+  {"id": 7, "question": "What is BM25?", "expected_in_docs": false},
+  {"id": 8, "question": "What is MMR?", "expected_in_docs": false},
+  {"id": 9, "question": "When is an agent worse than a chain?", "expected_in_docs": false},
+  {"id": 10, "question": "Define lost in the middle.", "expected_in_docs": false}
+]
