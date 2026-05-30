@@ -76,6 +76,8 @@ async def main() -> None:
                 {"messages": [{"role": "user", "content": "What's (3 + 5) * 12?"}]}
             )
             print(out)
+            final_text = out["messages"][-1].content
+            print(final_text)
 
 
 #  Run async main via asyncio.run()
