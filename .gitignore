@@ -1,11 +1,13 @@
-.venv/
+# secrets
 .env
+
+# venv
+.venv/
+
+# python
 __pycache__/
 *.pyc
 .idea/
-# Chroma local vector database
-mini_projects/p04_RAG_QA_similarity/data/chroma
-mini_projects/p05_RAG_QA_MMR/data/chroma
 
 # Chroma artifacts (vector index)
 **/data/chroma/
